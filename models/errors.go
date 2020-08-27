@@ -38,6 +38,7 @@ const (
 	// not at least 32 bytes
 	ErrRememberTooShort privateError = "models: remember token must be at least 32 bytes"
 	ErrUserIDRequired   privateError = "models: user ID is required"
+	ErrServiceRequired  privateError = "models: service ID is required"
 )
 
 type modelError string
