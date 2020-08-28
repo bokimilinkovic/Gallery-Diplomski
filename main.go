@@ -1,30 +1,31 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"net/http"
-
 	"gallery/controllers"
 	"gallery/email"
 	"gallery/middleware"
 	"gallery/models"
+	"net/http"
 
 	"github.com/gorilla/mux"
+	"golang.org/x/oauth2"
 )
 
 func main() {
-	boolPtr := flag.Bool("prod", false, "Provide this flag in production. This ensures that a .config file is provided before the application starts.")
-	flag.Parse()
-
-	cfg := LoadConfig(*boolPtr)
+	cfg, err := LoadFromENV()
+	if err != nil {
+		must(err)
+	}
+	fmt.Println(cfg)
 	dbCfg := cfg.Database
 	services, err := models.NewServices(
-		models.WithGorm(dbCfg.Dialect(), dbCfg.ConnectionInfo()),
+		models.WithGorm(dbCfg.Dialect(), cfg.DatabaseURL),
 		models.WithLogMode(!cfg.IsProd()),
 		models.WithUser(cfg.Pepper, cfg.HMACKey),
 		models.WithGallery(),
 		models.WithImage(),
+		models.WithOAuth(),
 	)
 	must(err)
 	defer services.Close()
@@ -32,15 +33,26 @@ func main() {
 
 	mgCfg := cfg.Mailgun
 	emailer := email.NewClient(
+		cfg.BasePath,
 		email.WithSender("MyGallery.com Support", "mygallery@sandbox04505cbb8c1d4be79cc5aa615196857c.mailgun.org"),
 		email.WithMailgun(mgCfg.Domain, mgCfg.APIKey, mgCfg.PublicAPIKey),
 	)
+	dbxOAuth := &oauth2.Config{
+		ClientID:     cfg.Dropbox.ID,
+		ClientSecret: cfg.Dropbox.Secret,
+		Endpoint: oauth2.Endpoint{
+			AuthURL:  cfg.Dropbox.AuthURL,
+			TokenURL: cfg.Dropbox.TokenURL,
+		},
+		RedirectURL: cfg.BasePath + "/ouath/dropbox/callback",
+	}
 
 	r := mux.NewRouter()
+
 	staticC := controllers.NewStatic()
 	usersC := controllers.NewUsers(services.User, emailer)
 	galleriesC := controllers.NewGalleries(services.Gallery, services.Image, r)
-
+	oauthsC := controllers.NewOAuths(services.OAuth, dbxOAuth)
 	// b, err := rand.Bytes(32)
 	// must(err)
 	// csrfMw := csrf.Protect(b, csrf.Secure(cfg.IsProd())) kod listenIServa dodaj posle
@@ -50,6 +62,19 @@ func main() {
 	requireUserMw := middleware.RequireUser{
 		User: userMw,
 	}
+
+	midd := func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			r.Header.Set("Content-Type", "x-www-form-urlencoded")
+			next.ServeHTTP(w, r)
+		})
+	}
+	_ = midd
+
+	//OAUTH routes
+	r.HandleFunc("/ouath/dropbox/test", requireUserMw.ApplyFn(oauthsC.DropboxTest))
+	r.HandleFunc("/ouath/dropbox/callback", requireUserMw.ApplyFn(oauthsC.DropboxCallback))
+	r.HandleFunc("/oauth/dropbox/connect", requireUserMw.ApplyFn(oauthsC.DropboxConnect))
 
 	r.Handle("/", staticC.Home).Methods("GET")
 	r.Handle("/contact", staticC.Contact).Methods("GET")
@@ -81,6 +106,7 @@ func main() {
 	r.HandleFunc("/galleries/{id:[0-9]+}/update", requireUserMw.ApplyFn(galleriesC.Update)).Methods("POST")
 	r.HandleFunc("/galleries/{id:[0-9]+}/delete", requireUserMw.ApplyFn(galleriesC.Delete)).Methods("POST")
 	r.HandleFunc("/galleries/{id:[0-9]+}/images", requireUserMw.ApplyFn(galleriesC.ImageUpload)).Methods("POST")
+	r.HandleFunc("/galleries/{id:[0-9]+}/images/link", requireUserMw.ApplyFn(galleriesC.ImageViaLink)).Methods("POST")
 	// /galleries/:id/images/:filename/delete
 	r.HandleFunc("/galleries/{id:[0-9]+}/images/{filename}/delete", requireUserMw.ApplyFn(galleriesC.ImageDelete)).Methods("POST")
 

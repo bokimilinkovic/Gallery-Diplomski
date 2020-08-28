@@ -8,7 +8,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/">LensLocked.com</a>
+      <a class="navbar-brand" href="/">MyGallery.com</a>
     </div>
     <div class="collapse navbar-collapse" id="navbar">
       <ul class="nav navbar-nav">
@@ -20,6 +20,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         {{if .User}}
+        <li><a href = "/oauth/dropbox/connect">Dropbox connect</a></li>
           <li>{{template "logoutForm"}}</li>
         {{else}}
           <li><a href="/login">Log In</a></li>
