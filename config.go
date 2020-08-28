@@ -40,6 +40,7 @@ type Config struct {
 	Env      string         `json:"env"`
 	Pepper   string         `json:"pepper"`
 	HMACKey  string         `json:"hmac_key"`
+	BasePath string         `json:"basepath`
 	Database PostgresConfig `json:"database"`
 	Mailgun  MailgunConfig  `json:"mailgun"`
 	Dropbox  OauthConfig    `json:"dropbox"`

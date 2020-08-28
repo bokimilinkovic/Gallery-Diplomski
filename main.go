@@ -34,6 +34,7 @@ func main() {
 
 	mgCfg := cfg.Mailgun
 	emailer := email.NewClient(
+		cfg.BasePath,
 		email.WithSender("MyGallery.com Support", "mygallery@sandbox04505cbb8c1d4be79cc5aa615196857c.mailgun.org"),
 		email.WithMailgun(mgCfg.Domain, mgCfg.APIKey, mgCfg.PublicAPIKey),
 	)
@@ -44,7 +45,7 @@ func main() {
 			AuthURL:  cfg.Dropbox.AuthURL,
 			TokenURL: cfg.Dropbox.TokenURL,
 		},
-		RedirectURL: "http://localhost:3000/ouath/dropbox/callback",
+		RedirectURL: cfg.BasePath + "/ouath/dropbox/callback",
 	}
 
 	r := mux.NewRouter()

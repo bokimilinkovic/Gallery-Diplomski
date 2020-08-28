@@ -10,7 +10,6 @@ import (
 const (
 	welcomeSubject = "Welcome to MyGallery.com!"
 	resetSubject   = "Instructions for resetting your password."
-	resetBaseURL   = "http://localhost:3000/reset"
 )
 
 const welcomeText = `Hi there!
@@ -25,7 +24,7 @@ Bojan
 const welcomeHTML = `Hi there!<br/>
 <br/>
 Welcome to
-<a href="http://localhost:3000">MyGallery.com</a>! We really hope you enjoy using our application!<br/>
+<a href="%s">MyGallery.com</a>! We really hope you enjoy using our application!<br/>
 <br/>
 Best,<br/>
 Bojan
@@ -78,7 +77,7 @@ func WithSender(name, email string) ClientConfig {
 
 type ClientConfig func(*Client)
 
-func NewClient(opts ...ClientConfig) *Client {
+func NewClient(basepath string, opts ...ClientConfig) *Client {
 	client := Client{
 		// Set a default from email address...
 		from: "bojanmilinkovic97@uns.ac.rs",
@@ -86,16 +85,19 @@ func NewClient(opts ...ClientConfig) *Client {
 	for _, opt := range opts {
 		opt(&client)
 	}
+	client.basepath = basepath
 	return &client
 }
 
 type Client struct {
-	from string
-	mg   mailgun.Mailgun
+	from     string
+	mg       mailgun.Mailgun
+	basepath string
 }
 
 func (c *Client) Welcome(toName, toEmail string) error {
 	message := mailgun.NewMessage(c.from, welcomeSubject, welcomeText, buildEmail(toName, toEmail))
+	welcomeHTML := fmt.Sprintf(welcomeHTML, c.basepath)
 	message.SetHtml(welcomeHTML)
 	_, _, err := c.mg.Send(message)
 	return err
@@ -104,7 +106,7 @@ func (c *Client) Welcome(toName, toEmail string) error {
 func (c *Client) ResetPw(toEmail, token string) error {
 	v := url.Values{}
 	v.Set("token", token)
-	resetUrl := resetBaseURL + "?" + v.Encode()
+	resetUrl := c.basepath + "?" + v.Encode()
 	resetText := fmt.Sprintf(resetTextTmpl, resetUrl, token)
 	message := mailgun.NewMessage(c.from, resetSubject, resetText, toEmail)
 	resetHTML := fmt.Sprintf(resetHTMLTmpl, resetUrl, resetUrl, token)
