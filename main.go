@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"gallery/controllers"
 	"gallery/email"
@@ -14,11 +13,11 @@ import (
 )
 
 func main() {
-	boolPtr := flag.Bool("prod", false, "Provide this flag in production. This ensures that a .config file is provided before the application starts.")
-	flag.Parse()
-
-	cfg := LoadConfig(*boolPtr)
-	fmt.Println(cfg.Dropbox)
+	cfg, err := LoadFromENV()
+	if err != nil {
+		must(err)
+	}
+	fmt.Println(cfg)
 	dbCfg := cfg.Database
 	services, err := models.NewServices(
 		models.WithGorm(dbCfg.Dialect(), cfg.DatabaseURL),
