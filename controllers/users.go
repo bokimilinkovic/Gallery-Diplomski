@@ -83,7 +83,7 @@ func (u *Users) Create(w http.ResponseWriter, r *http.Request) {
 
 	alert := views.Alert{
 		Level:   views.AlertLvlSuccess,
-		Message: "Welcome to LensLocked.com!",
+		Message: "Welcome to My Fallery!",
 	}
 	views.RedirectAlert(w, r, "/galleries", http.StatusFound, alert)
 }

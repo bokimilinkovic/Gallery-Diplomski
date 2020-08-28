@@ -77,7 +77,7 @@ func (v *View) Render(w http.ResponseWriter, r *http.Request, data interface{}) 
 	fmt.Println("%v", vd.Yield)
 	if err := tpl.ExecuteTemplate(&buf, v.Layout, vd); err != nil {
 		log.Println(err)
-		http.Error(w, "Something went wrong. If the problem persists, please email support@lenslocked.com", http.StatusInternalServerError)
+		http.Error(w, "Something went wrong. If the problem persists, please email boki1997@gmail.com", http.StatusInternalServerError)
 		return
 	}
 	io.Copy(w, &buf)
