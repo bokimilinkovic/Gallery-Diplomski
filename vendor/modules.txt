@@ -1,0 +1,56 @@
+# github.com/dropbox/dropbox-sdk-go-unofficial v5.6.0+incompatible
+## explicit
+github.com/dropbox/dropbox-sdk-go-unofficial/dropbox
+github.com/dropbox/dropbox-sdk-go-unofficial/dropbox/async
+github.com/dropbox/dropbox-sdk-go-unofficial/dropbox/auth
+github.com/dropbox/dropbox-sdk-go-unofficial/dropbox/file_properties
+github.com/dropbox/dropbox-sdk-go-unofficial/dropbox/files
+# github.com/golang/protobuf v1.2.0
+github.com/golang/protobuf/proto
+# github.com/gorilla/csrf v1.7.0
+## explicit
+github.com/gorilla/csrf
+# github.com/gorilla/mux v1.7.4
+## explicit
+github.com/gorilla/mux
+# github.com/gorilla/schema v1.1.0
+## explicit
+github.com/gorilla/schema
+# github.com/gorilla/securecookie v1.1.1
+github.com/gorilla/securecookie
+# github.com/jinzhu/gorm v1.9.16
+## explicit
+github.com/jinzhu/gorm
+github.com/jinzhu/gorm/dialects/postgres
+# github.com/jinzhu/inflection v1.0.0
+github.com/jinzhu/inflection
+# github.com/lib/pq v1.1.1
+github.com/lib/pq
+github.com/lib/pq/hstore
+github.com/lib/pq/oid
+github.com/lib/pq/scram
+# github.com/pkg/errors v0.9.1
+## explicit
+github.com/pkg/errors
+# golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de
+## explicit
+golang.org/x/crypto/bcrypt
+golang.org/x/crypto/blowfish
+# golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e
+golang.org/x/net/context
+golang.org/x/net/context/ctxhttp
+# golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
+## explicit
+golang.org/x/oauth2
+golang.org/x/oauth2/internal
+# google.golang.org/appengine v1.4.0
+google.golang.org/appengine/internal
+google.golang.org/appengine/internal/base
+google.golang.org/appengine/internal/datastore
+google.golang.org/appengine/internal/log
+google.golang.org/appengine/internal/remote_api
+google.golang.org/appengine/internal/urlfetch
+google.golang.org/appengine/urlfetch
+# gopkg.in/mailgun/mailgun-go.v1 v1.1.1
+## explicit
+gopkg.in/mailgun/mailgun-go.v1
