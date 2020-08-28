@@ -21,7 +21,7 @@ func main() {
 	fmt.Println(cfg.Dropbox)
 	dbCfg := cfg.Database
 	services, err := models.NewServices(
-		models.WithGorm(dbCfg.Dialect(), dbCfg.ConnectionInfo()),
+		models.WithGorm(dbCfg.Dialect(), cfg.DatabaseURL),
 		models.WithLogMode(!cfg.IsProd()),
 		models.WithUser(cfg.Pepper, cfg.HMACKey),
 		models.WithGallery(),

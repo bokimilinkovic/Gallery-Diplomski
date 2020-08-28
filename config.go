@@ -36,14 +36,15 @@ func DefaultPostgresConfig() PostgresConfig {
 }
 
 type Config struct {
-	Port     int            `json:"port"`
-	Env      string         `json:"env"`
-	Pepper   string         `json:"pepper"`
-	HMACKey  string         `json:"hmac_key"`
-	BasePath string         `json:"basepath`
-	Database PostgresConfig `json:"database"`
-	Mailgun  MailgunConfig  `json:"mailgun"`
-	Dropbox  OauthConfig    `json:"dropbox"`
+	Port        int            `json:"port"`
+	Env         string         `json:"env"`
+	Pepper      string         `json:"pepper"`
+	HMACKey     string         `json:"hmac_key"`
+	BasePath    string         `json:"basepath`
+	DatabaseURL string         `json:"databaseurl"`
+	Database    PostgresConfig `json:"database"`
+	Mailgun     MailgunConfig  `json:"mailgun"`
+	Dropbox     OauthConfig    `json:"dropbox"`
 }
 
 func (c Config) IsProd() bool {
